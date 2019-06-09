@@ -1,0 +1,70 @@
+pixmap_path "/usr/share/pixmaps:/usr/include/X11/pixmaps"
+     
+     style "default"
+     {
+       font_name = "DejaVu Sans Mono 10"
+     
+       bg[NORMAL] = "#272822"
+       bg[SELECTED] = "#565656"
+       bg[INSENSITIVE] = "#000000"
+       bg[ACTIVE] = "#565656"
+       bg[PRELIGHT] = "#565656"
+     
+       fg[NORMAL] = "white"
+       fg[SELECTED] = "#565656"
+       fg[ACTIVE] = "black"
+       fg[PRELIGHT] = "black"
+     
+       base[INSENSITIVE] = "#777766"
+       text[INSENSITIVE] = { 0.60, 0.65, 0.57 }
+     }
+
+     style "menuitem"
+     {
+       font_name = "courier-medium 10"
+     
+       bg[NORMAL] = "#272822"
+       bg[SELECTED] = "#565656"
+       bg[INSENSITIVE] = "#000000"
+       bg[ACTIVE] = "#565656"
+       bg[PRELIGHT] = "#565656"
+     
+       fg[NORMAL] = "black"
+       fg[SELECTED] = "#565656"
+       fg[ACTIVE] = "black"
+       fg[PRELIGHT] = "black"
+     
+       base[INSENSITIVE] = "#777766"
+       text[INSENSITIVE] = { 0.60, 0.65, 0.57 }
+     }
+     
+     style "scroll"
+     {
+       font_name = "courier-medium 10"
+     
+       bg[NORMAL] = "#343434"
+       bg[SELECTED] = "#565656"
+       bg[INSENSITIVE] = "#000000"
+       bg[ACTIVE] = "#565656"
+       bg[PRELIGHT] = "#565656"
+     
+       fg[NORMAL] = "#454545"
+       fg[SELECTED] = "#565656"
+       fg[ACTIVE] = "black"
+       fg[PRELIGHT] = "black"
+     
+       base[INSENSITIVE] = "#777766"
+       text[INSENSITIVE] = { 0.60, 0.65, 0.57 }
+     }
+     
+
+     
+     style "ruler" = "default"
+     {
+       font_name = "helvetica 8"
+     }
+widget_class "*Menu*" style "default"
+widget "*ScrollBar*" style "scroll"
+widget "*emacs-dialog*" style "default"
+widget "*emacs-filedialog*" style "default"
+widget "*emacs-menuitem*" style "default"
