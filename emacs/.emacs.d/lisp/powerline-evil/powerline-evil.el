@@ -68,6 +68,10 @@ Valid Values: standard, verbose, visual-expanded"
   "Powerline face for evil EMACS state."
   :group 'powerline)
 
+(defface powerline-evil-inactive-face
+  '((t (:background "grey40" :inherit powerline-evil-base-face)))
+  "Powerline face for evil INACTIVE state."
+  :group 'powerline)
 
 ;;;###autoload
 (defun powerline-evil-face ()

@@ -59,7 +59,7 @@
                           (separator-right (intern (format "powerline-%s-%s"
                                                            (powerline-current-separator)
                                                            (cdr powerline-default-separator-dir))))
-                          (lhs (list (let ((evil-face (powerline-evil-face)))
+                          (lhs (list (let ((evil-face (if active (powerline-evil-face) 'powerline-evil-inactive-face)))
 				       (if evil-mode
                                            (powerline-raw (powerline-evil-tag) evil-face)))
 				     (powerline-raw "%*" face0 'l)
