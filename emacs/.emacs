@@ -18,12 +18,15 @@
  ;; If there is more than one, they won't work right.
  '(ansi-color-names-vector
    ["#272822" "#F92672" "#A6E22E" "#E6DB74" "#66D9EF" "#FD5FF0" "#A1EFE4" "#F8F8F2"])
- '(blink-cursor-mode nil)
  '(counsel-mode t)
  '(custom-enabled-themes (quote (monokai)))
  '(custom-safe-themes
    (quote
     ("72dd32afad786385f5672843cea2db68e7f03b0f9b41cc011e8456bc28090b30" "bd7b7c5df1174796deefce5debc2d976b264585d51852c962362be83932873d9" default)))
+ '(display-line-numbers-type (quote relative))
+ '(display-line-numbers-width-start t)
+ '(evil-escape-excluded-states (quote (visual)))
+ '(global-display-line-numbers-mode t)
  '(grep-command "grep -nHi -e ")
  '(ido-enable-flex-matching t)
  '(ivy-mode t)
@@ -48,7 +51,7 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(default ((t (:family "xos4 Terminus" :foundry "xos4" :slant normal :weight normal :height 120 :width normal))))
+ '(default ((t (:family "Misc Tamsyn" :foundry "Misc" :slant normal :weight normal :height 120 :width normal))))
  '(font-lock-warning-face ((t (:foreground "#ffffff" :weight bold :underline nil))))
  '(ivy-current-match ((t (:inherit bold :background "#454555"))))
  '(line-number ((t (:inherit (shadow default) :background "#303030"))))
