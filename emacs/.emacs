@@ -18,30 +18,73 @@
  ;; If there is more than one, they won't work right.
  '(ansi-color-names-vector
    ["#272822" "#F92672" "#A6E22E" "#E6DB74" "#66D9EF" "#FD5FF0" "#A1EFE4" "#F8F8F2"])
+ '(blink-cursor-mode nil)
+ '(compilation-message-face (quote default))
  '(counsel-mode t)
- '(custom-enabled-themes (quote (monokai)))
+ '(custom-enabled-themes (quote (challenger-deep)))
  '(custom-safe-themes
    (quote
-    ("72dd32afad786385f5672843cea2db68e7f03b0f9b41cc011e8456bc28090b30" "bd7b7c5df1174796deefce5debc2d976b264585d51852c962362be83932873d9" default)))
+    ("36c86cb6c648b9a15d849026c90bd6a4ae76e4d482f7bcd138dedd4707ff26a5" "c968804189e0fc963c641f5c9ad64bca431d41af2fb7e1d01a2a6666376f819c" "16dd114a84d0aeccc5ad6fd64752a11ea2e841e3853234f19dc02a7b91f5d661" "b3bcf1b12ef2a7606c7697d71b934ca0bdd495d52f901e73ce008c4c9825a3aa" "89127baa0733c28af281b48581df7875daf729dd8a6e99ece441f29bbb611087" "1436d643b98844555d56c59c74004eb158dc85fc55d2e7205f8d9b8c860e177f" "274fa62b00d732d093fc3f120aca1b31a6bb484492f31081c1814a858e25c72e" "4aee8551b53a43a883cb0b7f3255d6859d766b6c5e14bcb01bed572fcbef4328" "72dd32afad786385f5672843cea2db68e7f03b0f9b41cc011e8456bc28090b30" "bd7b7c5df1174796deefce5debc2d976b264585d51852c962362be83932873d9" default)))
  '(display-line-numbers-type (quote relative))
  '(display-line-numbers-width-start t)
+ '(evil-commentary-mode t)
  '(evil-escape-excluded-states (quote (visual)))
+ '(fci-rule-color "#20240E")
  '(global-display-line-numbers-mode t)
+ '(gnus-select-method (quote (nnnil "news")))
  '(grep-command "grep -nHi -e ")
+ '(highlight-changes-colors (quote ("#FD5FF0" "#AE81FF")))
+ '(highlight-tail-colors
+   (quote
+    (("#20240E" . 0)
+     ("#679A01" . 20)
+     ("#4BBEAE" . 30)
+     ("#1DB4D0" . 50)
+     ("#9A8F21" . 60)
+     ("#A75B00" . 70)
+     ("#F309DF" . 85)
+     ("#20240E" . 100))))
  '(ido-enable-flex-matching t)
  '(ivy-mode t)
  '(kill-whole-line t)
  '(magit-blame-echo-style (quote headings))
+ '(magit-diff-use-overlays nil)
  '(menu-bar-mode nil)
  '(package-selected-packages
    (quote
-    (rainbow-mode fish-mode diminish evil-escape ace-window avy dockerfile-mode yaml-mode magit lua-mode company smex counsel-tramp deadgrep swiper yascroll evil evil-tutor evil-goggles)))
+    (challenger-deep-theme excorporate base16-theme gruvbox-theme color-theme-sanityinc-solarized dracula-theme evil-commentary rainbow-mode fish-mode diminish evil-escape ace-window avy dockerfile-mode yaml-mode magit lua-mode company smex counsel-tramp deadgrep swiper yascroll evil evil-tutor evil-goggles)))
  '(paren-mode (quote sexp) t (paren))
+ '(pos-tip-background-color "#A6E22E")
+ '(pos-tip-foreground-color "#262626")
  '(scroll-bar-mode nil)
  '(show-paren-mode t)
  '(size-indication-mode t)
  '(tool-bar-mode nil)
  '(truncate-lines t)
+ '(vc-annotate-background nil)
+ '(vc-annotate-color-map
+   (quote
+    ((20 . "#F92672")
+     (40 . "#CF4F1F")
+     (60 . "#C26C0F")
+     (80 . "#E6DB74")
+     (100 . "#AB8C00")
+     (120 . "#A18F00")
+     (140 . "#989200")
+     (160 . "#8E9500")
+     (180 . "#A6E22E")
+     (200 . "#729A1E")
+     (220 . "#609C3C")
+     (240 . "#4E9D5B")
+     (260 . "#3C9F79")
+     (280 . "#A1EFE4")
+     (300 . "#299BA6")
+     (320 . "#2896B5")
+     (340 . "#2790C3")
+     (360 . "#66D9EF"))))
+ '(vc-annotate-very-old-color nil)
+ '(weechat-color-list
+   (unspecified "#262626" "#20240E" "#F70057" "#F92672" "#86C30D" "#A6E22E" "#BEB244" "#E6DB74" "#40CAE4" "#66D9EF" "#FB35EA" "#FD5FF0" "#74DBCD" "#A1EFE4" "#F8F8F2" "#F8F8F0"))
  '(whitespace-style (quote (face tabs spaces trailing newline empty)))
  '(yascroll:delay-to-hide nil))
 
@@ -52,17 +95,16 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(default ((t (:family "Misc Tamsyn" :foundry "Misc" :slant normal :weight normal :height 120 :width normal))))
- '(font-lock-warning-face ((t (:foreground "#ffffff" :weight bold :underline nil))))
  '(ivy-current-match ((t (:inherit bold :background "#454555"))))
- '(line-number ((t (:inherit (shadow default) :background "#303030"))))
- '(line-number-current-line ((t (:inherit line-number :background "#333333" :weight semi-bold))))
  '(mode-line ((t (:background "#49483E" :foreground "#F8F8F0" :box nil))))
  '(mode-line-inactive ((t (:background "#303125" :foreground "#75715E" :box nil))))
  '(powerline-active2 ((t (:background "#64645E"))))
  '(powerline-evil-emacs-face ((t (:inherit powerline-evil-base-face :background "violet" :foreground "black"))))
  '(powerline-evil-insert-face ((t (:inherit powerline-evil-base-face :background "#F92672"))))
  '(powerline-evil-normal-face ((t (:inherit powerline-evil-base-face :background "#66D9EF" :foreground "#000000"))))
- '(powerline-evil-visual-face ((t (:inherit powerline-evil-base-face :background "orange" :foreground "black")))))
+ '(powerline-evil-visual-face ((t (:inherit powerline-evil-base-face :background "orange" :foreground "black"))))
+ '(variable-pitch ((t nil))))
+
 
 (global-set-key (kbd "M-g") 'goto-line)
 (global-set-key (kbd "C-;") 'beginning-of-defun)
@@ -99,15 +141,15 @@
 (set-fringe-mode '(0 . nil))
 (setq auto-save-default nil)
 
-(font-lock-add-keywords 'c-mode
-                        '(
-                          ("\\(\\w+\\)\\s-*\("
-                           1 font-lock-warning-face)
-                          ("RETURN_OK\\|FALSE\\|TRUE"
-                           . font-lock-constant-face)
-                          ("XM_END_ITERATE_CONST\\|XM_END_ITERATE\\|XL_END_ITERATE_CONST\\|XL_END_ITERATE"
-                           . font-lock-variable-name-face))
-                        t)
+;; (font-lock-add-keywords 'c-mode
+;;                         '(
+;;                           ;;("\\(\\w+\\)\\s-*\("
+;;                            ;;1 font-lock-warning-face)
+;;                           ("RETURN_OK\\|FALSE\\|TRUE"
+;;                            . font-lock-constant-face)
+;;                           ("XM_END_ITERATE_CONST\\|XM_END_ITERATE\\|XL_END_ITERATE_CONST\\|XL_END_ITERATE"
+;;                            . font-lock-variable-name-face))
+;;                         t)
 (setq c-default-style "linux" c-basic-offset 4)
 (setq backup-directory-alist `(("." . "~/.saves")))
 
@@ -121,10 +163,21 @@
 (evil-mode 1)
 (evil-goggles-mode 1)
 (evil-escape-mode 1)
+(evil-commentary-mode 1)
 (setq-default evil-escape-key-sequence "kk")
 (setq-default evil-escape-delay 0.2)
 (define-key evil-motion-state-map (kbd "g h") #'evil-avy-goto-word-1)
-(define-key evil-motion-state-map (kbd "g c") #'evil-avy-goto-char-2)
+(define-key evil-motion-state-map (kbd "g b") #'evil-avy-goto-char-2)
+(setq evil-emacs-state-cursor '("violet" box))
+(setq evil-normal-state-cursor '("#66D9EF" box))
+(setq evil-visual-state-cursor '("orange" box))
+(setq evil-insert-state-cursor '("#F92672" bar))
+(setq evil-replace-state-cursor '("#F92672" bar))
+(setq evil-operator-state-cursor '("#F92672" hollow))
+
+(add-hook 'evil-insert-state-entry-hook (lambda () (start-process "" nil "awesome-client" "client.focus.border_color = '#f92672'")))
+(add-hook 'evil-normal-state-entry-hook (lambda () (start-process "" nil "awesome-client" "client.focus.border_color = '#66d9ef'")))
+(add-hook 'evil-visual-state-entry-hook (lambda () (start-process "" nil "awesome-client" "client.focus.border_color = '#ffa500'")))
 ;; POWERLINE
 (require 'powerline-evil)
 (require 'powerline)
@@ -145,3 +198,5 @@
 (diminish 'evil-goggles-mode)
 (diminish 'company-mode "cmpn")
 
+(require 'mu4e)
+(setq mu4e-maildir "~/.mail/temera/")
