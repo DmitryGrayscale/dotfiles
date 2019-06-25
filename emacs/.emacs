@@ -175,6 +175,13 @@
 (setq evil-replace-state-cursor '("#F92672" bar))
 (setq evil-operator-state-cursor '("#F92672" hollow))
 
+(defun awesomewm-change-border-color (color)
+  "Change border color for window basing on evil state"
+(start-process "" nil "awesome-client" (concat "client.focus.border_color = '" color "'"))
+)
+
+
+
 (add-hook 'evil-insert-state-entry-hook (lambda () (start-process "" nil "awesome-client" "client.focus.border_color = '#f92672'")))
 (add-hook 'evil-normal-state-entry-hook (lambda () (start-process "" nil "awesome-client" "client.focus.border_color = '#66d9ef'")))
 (add-hook 'evil-visual-state-entry-hook (lambda () (start-process "" nil "awesome-client" "client.focus.border_color = '#ffa500'")))
