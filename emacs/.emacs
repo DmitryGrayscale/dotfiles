@@ -1,4 +1,4 @@
-;; MELPA
+;;; Commentary:
 (require 'package)
 (add-to-list 'package-archives (cons "melpa" "http://melpa.org/packages/") t)
 (package-initialize)
@@ -18,6 +18,11 @@
  ;; If there is more than one, they won't work right.
  '(ansi-color-names-vector
    ["#272822" "#F92672" "#A6E22E" "#E6DB74" "#66D9EF" "#FD5FF0" "#A1EFE4" "#F8F8F2"])
+ '(blink-cursor-mode t)
+ '(company-dabbrev-minimum-length 2)
+ '(company-idle-delay 0)
+ '(company-show-numbers t)
+ '(company-tooltip-idle-delay 0.2)
  '(compilation-message-face (quote default))
  '(counsel-mode t)
  '(custom-enabled-themes (quote (challenger-deep)))
@@ -29,7 +34,11 @@
  '(evil-commentary-mode t)
  '(evil-escape-excluded-states (quote (visual)))
  '(fci-rule-color "#20240E")
+ '(flycheck-check-syntax-automatically
+   (quote
+    (save idle-change idle-buffer-switch new-line mode-enabled)))
  '(global-display-line-numbers-mode t)
+ '(global-flycheck-mode t)
  '(gnus-select-method (quote (nnnil "news")))
  '(grep-command "grep -nHi -e ")
  '(highlight-changes-colors (quote ("#FD5FF0" "#AE81FF")))
@@ -51,7 +60,7 @@
  '(menu-bar-mode nil)
  '(package-selected-packages
    (quote
-    (challenger-deep-theme excorporate base16-theme gruvbox-theme color-theme-sanityinc-solarized dracula-theme evil-commentary rainbow-mode fish-mode diminish evil-escape ace-window avy dockerfile-mode yaml-mode magit lua-mode company smex counsel-tramp deadgrep swiper yascroll evil evil-tutor evil-goggles)))
+    (modern-cpp-font-lock cpp-auto-include xah-lookup evil-surround flycheck challenger-deep-theme excorporate base16-theme gruvbox-theme color-theme-sanityinc-solarized dracula-theme evil-commentary rainbow-mode fish-mode diminish evil-escape ace-window avy dockerfile-mode yaml-mode magit lua-mode company smex counsel-tramp deadgrep swiper yascroll evil evil-tutor evil-goggles)))
  '(paren-mode (quote sexp) t (paren))
  '(pos-tip-background-color "#A6E22E")
  '(pos-tip-foreground-color "#262626")
@@ -88,12 +97,13 @@
  '(yascroll:delay-to-hide nil))
 
 ;; FACES
+(add-to-list 'default-frame-alist '(font . "Misc Tamsyn-12"))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(default ((t (:family "Input" :foundry "FBI " :slant normal :weight normal :height 98 :width normal))))
+ '(default ((t (:background nil))))
  '(ivy-current-match ((t (:inherit bold :background "#454555"))))
  '(mode-line ((t (:background "#413b60" :foreground "#9994b8" :box nil))))
  '(mode-line-buffer-id ((t nil)))
@@ -105,7 +115,7 @@
  '(powerline-evil-visual-face ((t (:inherit powerline-evil-base-face :background "orange" :foreground "black"))))
  '(variable-pitch ((t nil))))
 
-
+(set-frame-font "Misc Tamsyn 12" nil t)
 (global-set-key (kbd "M-g") 'goto-line)
 (global-set-key (kbd "C-;") 'beginning-of-defun)
 (global-set-key (kbd "C-'") 'end-of-defun)
@@ -133,9 +143,10 @@
 (setq ivy-re-builders-alist '((counsel-M-x . ivy--regex-fuzzy)
 			      (t . ivy--regex-plus)))
 
-(company-mode 1)
+(global-company-mode 1)
+(global-flycheck-mode 1)
 (electric-pair-mode 1)
-;;(global-hl-line-mode 1)
+(global-hl-line-mode 1)
 (blink-cursor-mode nil)
 '(auto-save-mode nil)
 (set-fringe-mode '(0 . nil))
@@ -151,6 +162,8 @@
 ;;                            . font-lock-variable-name-face))
 ;;                         t)
 (setq c-default-style "linux" c-basic-offset 4)
+(c-set-offset 'inline-open 0)
+(setq-default indent-tabs-mode nil)
 (setq backup-directory-alist `(("." . "~/.saves")))
 
 (setq delete-old-versions t
@@ -164,16 +177,20 @@
 (evil-goggles-mode 1)
 (evil-escape-mode 1)
 (evil-commentary-mode 1)
-(setq-default evil-escape-key-sequence "kk")
+(evil-surround-mode 1)
+(setq-default evil-escape-key-sequence "jj")
 (setq-default evil-escape-delay 0.2)
 (define-key evil-motion-state-map (kbd "g h") #'evil-avy-goto-word-1)
-(define-key evil-motion-state-map (kbd "g b") #'evil-avy-goto-char-2)
+(define-key evil-motion-state-map (kbd "g b") #'evil-avy-goto-char-in-line)
+(define-key evil-insert-state-map (kbd "M-e") #'end-of-line)
 (setq evil-emacs-state-cursor '("violet" box))
 (setq evil-normal-state-cursor '("#66D9EF" box))
 (setq evil-visual-state-cursor '("orange" box))
 (setq evil-insert-state-cursor '("#F92672" bar))
 (setq evil-replace-state-cursor '("#F92672" bar))
 (setq evil-operator-state-cursor '("#F92672" hollow))
+(eval-after-load 'evil-ex
+  '(evil-ex-define-cmd "W[rite]" 'evil-write))
 
 (defun awesomewm-change-border-color (color)
   "Change border color for window basing on evil state"
@@ -191,7 +208,7 @@
 (powerline-default-theme)
 (setq powerline-default-separator nil)
 (setq powerline-display-buffer-size nil)
-(setq powerline-display-mule-info nil) 
+(setq powerline-display-mule-info nil)
 (setq powerline-evil-tag-style 'verbose)
 ;; TRAMP
 (require 'tramp)
