@@ -91,7 +91,7 @@ XTerm*reverseVideo: on
 XTerm*faceName: DejaVu Sans Mono:size=14:antialias=true
 XTerm*selectToClipboard: true
 
-URxvt.font: xft:Misc Tamsyn:style=Regular:size=12:antialias=true
+URxvt.font: xft:Misc Tamsyn:style=Regular:size=12:antialias=true,xft:Terminus Medium:style=regular:size=12:antialias=true
 URxvt.depth: 32
 
 !! BACKGROUND TRANSPARENT
