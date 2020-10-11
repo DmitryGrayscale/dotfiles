@@ -1,0 +1,14 @@
+! ------------------------------------------------------------------------------
+! ROFI Color theme
+! User: milouse
+! ------------------------------------------------------------------------------
+! "Color scheme for normal row" Set from: File
+rofi.color-normal:                   argb:00272822, #f8f8f2, argb:44272822, #f92672, #f8f8f2
+! "Color scheme for urgent row" Set from: File
+rofi.color-urgent:                   argb:00272822, #f92672, argb:00272822, #f92672, #f8f8f2
+! "Color scheme for active row" Set from: File
+rofi.color-active:                   argb:00272822, #a6e22a, argb:00272822, #141411, #a6e22a
+! "Color scheme window" Set from: File
+rofi.color-window:                   argb:11676767, #00AFFF, #00AFFF
+! "Separator style (none, dash, solid)" Set from: File
+rofi.separator-style:                solid
