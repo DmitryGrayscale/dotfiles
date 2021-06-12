@@ -1,4 +1,4 @@
 # Defined in - @ line 1
-function ll --description 'alias ll=ls -lah'
-	ls -lah $argv;
+function ll --wraps=ls --wraps='ls -lah' --description 'alias ll ls -lah'
+  ls -lah $argv;
 end
