@@ -80,9 +80,9 @@ Xft.antialias: true
 Xft.hinting: true
 Xft.rgba: rgb
 Xft.autohint: false
-Xft.hintstyle: hintfull
+Xft.hintstyle: hintslight
 Xft.lcdfilter: lcddefault
-Xcursor.theme: Chameleon-Pearl-Regular-0.5
+! Xcursor.theme: Chameleon-Pearl-Regular-0.5
 Xcursor.size:  0
 
 !XTerm*background: #272827

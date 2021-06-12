@@ -1,75 +1,226 @@
 -------------------------------------------------
--- Volume Widget for Awesome Window Manager
--- Shows the current volume level
+-- The Ultimate Volume Widget for Awesome Window Manager
 -- More details could be found here:
 -- https://github.com/streetturtle/awesome-wm-widgets/tree/master/volume-widget
 
 -- @author Pavel Makhov
--- @copyright 2018 Pavel Makhov
+-- @copyright 2020 Pavel Makhov
 -------------------------------------------------
 
 local awful = require("awful")
 local wibox = require("wibox")
-local watch = require("awful.widget.watch")
 local spawn = require("awful.spawn")
+local gears = require("gears")
+local beautiful = require("beautiful")
+local watch = require("awful.widget.watch")
+local utils = require("awesome-wm-widgets.volume-widget.utils")
 
-local path_to_icons = "/usr/share/icons/Arc/status/symbolic/"
 
+local LIST_DEVICES_CMD = [[sh -c "pacmd list-sinks; pacmd list-sources"]]
 local GET_VOLUME_CMD = 'amixer -D pulse sget Master'
 local INC_VOLUME_CMD = 'amixer -D pulse sset Master 5%+'
 local DEC_VOLUME_CMD = 'amixer -D pulse sset Master 5%-'
 local TOG_VOLUME_CMD = 'amixer -D pulse sset Master toggle'
 
-local volume_widget = wibox.widget {
-    {
-        id = "volicon",      
-        {
-            id = "icon",
-            image = path_to_icons .. "audio-volume-muted-symbolic.svg",
-            resize = false,
-            widget = wibox.widget.imagebox,
-        },
-        layout = wibox.container.margin(_, _, _, 3),
-    },
-    {
-       id = "voltext",
-       font = "Play 9",
-       widget = wibox.widget.textbox,
-    },
-    layout = wibox.layout.fixed.horizontal
+
+local widget_types = {
+    icon_and_text = require("awesome-wm-widgets.volume-widget.widgets.icon-and-text-widget"),
+    icon = require("awesome-wm-widgets.volume-widget.widgets.icon-widget"),
+    arc = require("awesome-wm-widgets.volume-widget.widgets.arc-widget"),
+    horizontal_bar = require("awesome-wm-widgets.volume-widget.widgets.horizontal-bar-widget"),
+    vertical_bar = require("awesome-wm-widgets.volume-widget.widgets.vertical-bar-widget")
+}
+local volume = {}
+
+local rows  = { layout = wibox.layout.fixed.vertical }
+
+local popup = awful.popup{
+    bg = beautiful.bg_normal,
+    ontop = true,
+    visible = false,
+    shape = gears.shape.rounded_rect,
+    border_width = 1,
+    border_color = beautiful.bg_focus,
+    maximum_width = 400,
+    offset = { y = 5 },
+    widget = {}
 }
 
-local update_graphic = function(widget, stdout, _, _, _)
-    local mute = string.match(stdout, "%[(o%D%D?)%]")
-    local volume = string.match(stdout, "(%d?%d?%d)%%")
-    volume = tonumber(string.format("% 3d", volume))
-    local volume_icon_name
-    if mute == "off" then volume_icon_name="audio-volume-muted-symbolic"
-    elseif (volume >= 0 and volume < 25) then volume_icon_name="audio-volume-low-symbolic"
-    elseif (volume < 60) then volume_icon_name="audio-volume-medium-symbolic"
-    elseif (volume <= 100) then volume_icon_name="audio-volume-high-symbolic"
-    end
-    widget.volicon.icon:set_image(path_to_icons .. volume_icon_name .. ".svg")
-    if mute == "on" then widget.voltext:set_text(" " .. volume .. "%")
-    else widget.voltext:set_text(" muted")
+local function build_main_line(device)
+    if device.active_port ~= nil and device.ports[device.active_port] ~= nil then
+        return device.properties.device_description .. ' · ' .. device.ports[device.active_port]
+    else
+        return device.properties.device_description
     end
 end
 
---[[ allows control volume level by:
-- clicking on the widget to mute/unmute
-- scrolling when cursor is over the widget
-]]
-volume_widget:connect_signal("button::press", function(_,_,_,button)
-    if (button == 4)     then awful.spawn(INC_VOLUME_CMD, false)
-    elseif (button == 5) then awful.spawn(DEC_VOLUME_CMD, false)
-    elseif (button == 1) then awful.spawn(TOG_VOLUME_CMD, false)
+local function build_rows(devices, on_checkbox_click, device_type)
+    local device_rows  = { layout = wibox.layout.fixed.vertical }
+    for _, device in pairs(devices) do
+
+        local checkbox = wibox.widget {
+            checked = device.is_default,
+            color = beautiful.bg_normal,
+            paddings = 2,
+            shape = gears.shape.circle,
+            forced_width = 20,
+            forced_height = 20,
+            check_color = beautiful.fg_urgent,
+            widget = wibox.widget.checkbox
+        }
+
+        checkbox:connect_signal("button::press", function()
+            spawn.easy_async(string.format([[sh -c 'pacmd set-default-%s "%s"']], device_type, device.name), function()
+                on_checkbox_click()
+            end)
+        end)
+
+        local row = wibox.widget {
+            {
+                {
+                    {
+                        checkbox,
+                        valign = 'center',
+                        layout = wibox.container.place,
+                    },
+                    {
+                        {
+                            text = build_main_line(device),
+                            align = 'left',
+                            widget = wibox.widget.textbox
+                        },
+                        left = 10,
+                        layout = wibox.container.margin
+                    },
+                    spacing = 8,
+                    layout = wibox.layout.align.horizontal
+                },
+                margins = 4,
+                layout = wibox.container.margin
+            },
+            bg = beautiful.bg_normal,
+            widget = wibox.container.background
+        }
+
+        row:connect_signal("mouse::enter", function(c) c:set_bg(beautiful.bg_focus) end)
+        row:connect_signal("mouse::leave", function(c) c:set_bg(beautiful.bg_normal) end)
+
+        local old_cursor, old_wibox
+        row:connect_signal("mouse::enter", function()
+            local wb = mouse.current_wibox
+            old_cursor, old_wibox = wb.cursor, wb
+            wb.cursor = "hand1"
+        end)
+        row:connect_signal("mouse::leave", function()
+            if old_wibox then
+                old_wibox.cursor = old_cursor
+                old_wibox = nil
+            end
+        end)
+
+        row:connect_signal("button::press", function()
+            spawn.easy_async(string.format([[sh -c 'pacmd set-default-%s "%s"']], device_type, device.name), function()
+                on_checkbox_click()
+            end)
+        end)
+
+        table.insert(device_rows, row)
     end
 
-    spawn.easy_async(GET_VOLUME_CMD, function(stdout, stderr, exitreason, exitcode)
-        update_graphic(volume_widget, stdout, stderr, exitreason, exitcode)
+    return device_rows
+end
+
+local function build_header_row(text)
+    return wibox.widget{
+        {
+            markup = "<b>" .. text .. "</b>",
+            align = 'center',
+            widget = wibox.widget.textbox
+        },
+        bg = beautiful.bg_normal,
+        widget = wibox.container.background
+    }
+end
+
+local function rebuild_popup()
+    spawn.easy_async(LIST_DEVICES_CMD, function(stdout)
+
+        local sinks, sources = utils.extract_sinks_and_sources(stdout)
+
+        for i = 0, #rows do rows[i]=nil end
+
+        table.insert(rows, build_header_row("SINKS"))
+        table.insert(rows, build_rows(sinks, function() rebuild_popup() end, "sink"))
+        table.insert(rows, build_header_row("SOURCES"))
+        table.insert(rows, build_rows(sources, function() rebuild_popup() end, "source"))
+
+        popup:setup(rows)
     end)
-end)
+end
 
-watch(GET_VOLUME_CMD, 1, update_graphic, volume_widget)
 
-return volume_widget
+local function worker(user_args)
+
+    local args = user_args or {}
+
+    local mixer_cmd = args.mixer_cmd or 'pavucontrol'
+    local widget_type = args.widget_type
+    local refresh_rate = args.refresh_rate or 1
+
+    if widget_types[widget_type] == nil then
+        volume.widget = widget_types['icon_and_text'].get_widget(args.icon_and_text_args)
+    else
+        volume.widget = widget_types[widget_type].get_widget(args)
+    end
+
+    local function update_graphic(widget, stdout)
+        local mute = string.match(stdout, "%[(o%D%D?)%]")   -- \[(o\D\D?)\] - [on] or [off]
+        if mute == 'off' then widget:mute()
+        elseif mute == 'on' then widget:unmute()
+        end
+        local volume_level = string.match(stdout, "(%d?%d?%d)%%") -- (\d?\d?\d)\%)
+        volume_level = string.format("% 3d", volume_level)
+        widget:set_volume_level(volume_level)
+    end
+
+    function volume:inc()
+        spawn.easy_async(INC_VOLUME_CMD, function(stdout) update_graphic(volume.widget, stdout) end)
+    end
+
+    function volume:dec()
+        spawn.easy_async(DEC_VOLUME_CMD, function(stdout) update_graphic(volume.widget, stdout) end)
+    end
+
+    function volume:toggle()
+        spawn.easy_async(TOG_VOLUME_CMD, function(stdout) update_graphic(volume.widget, stdout) end)
+    end
+
+    function volume:mixer()
+        if mixer_cmd then
+            spawn.easy_async(mixer_cmd)
+        end
+    end
+
+    volume.widget:buttons(
+            awful.util.table.join(
+                    awful.button({}, 3, function()
+                        if popup.visible then
+                            popup.visible = not popup.visible
+                        else
+                            rebuild_popup()
+                            popup:move_next_to(mouse.current_widget_geometry)
+                        end
+                    end),
+                    awful.button({}, 4, function() volume:inc() end),
+                    awful.button({}, 5, function() volume:dec() end),
+                    awful.button({}, 2, function() volume:mixer() end),
+                    awful.button({}, 1, function() volume:toggle() end)
+            )
+    )
+
+    watch(GET_VOLUME_CMD, refresh_rate, update_graphic, volume.widget)
+
+    return volume.widget
+end
+
+return setmetatable(volume, { __call = function(_, ...) return worker(...) end })

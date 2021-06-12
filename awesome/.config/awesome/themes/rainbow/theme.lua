@@ -10,9 +10,10 @@ local lain  = require("lain")
 local awful = require("awful")
 local wibox = require("wibox")
 local dpi   = require("beautiful.xresources").apply_dpi
-local battery_widget = require("awesome-wm-widgets.battery-widget.battery")
-local volume_widget = require("awesome-wm-widgets.volume-widget.volume")
-local brightness_widget = require("awesome-wm-widgets.brightness-widget.brightness")
+local spotify_widget = require("awesome-wm-widgets.spotify-widget.spotify")
+-- local battery_widget = require("awesome-wm-widgets.battery-widget.battery")
+-- local volume_widget = require("awesome-wm-widgets.volume-widget.volume")
+-- local brightness_widget = require("awesome-wm-widgets.brightness-widget.brightness")
 
 local os = os
 local my_table = awful.util.table or gears.table -- 4.{0,1} compatibility
@@ -20,9 +21,9 @@ local my_table = awful.util.table or gears.table -- 4.{0,1} compatibility
 local theme                                     = {}
 theme.default_dir                               = require("awful.util").get_themes_dir() .. "default"
 theme.dir                                       = os.getenv("HOME") .. "/.config/awesome/themes/rainbow"
-theme.wallpaper                                 = os.getenv("HOME") .. "/Изображения/Wallpapers/pac2.jpg"
+theme.wallpaper                                 = os.getenv("HOME") .. "/.config/awesome/kitsune.jpg"
 --theme.wallpaper                                 = os.getenv("HOME") .. "/.config/awesome/themes/multicolor/wall2.jpg"
-theme.font                                      = "Play 9"
+theme.font                                      = "DejaVu Sans 8"
 theme.fg_normal                                 = "#9E9E9E"
 theme.fg_focus                                  = "#EBEBFF"
 --theme.bg_normal                                 = "#392747"
@@ -42,8 +43,10 @@ theme.taglist_bg_focus                          = "#FE8019"
 theme.menu_height                               = dpi(16)
 theme.menu_width                                = dpi(140)
 theme.ocol                                      = "<span color='" .. theme.fg_normal .. "'>"
-theme.tasklist_bg_normal                        = "#24242400"
-theme.tasklist_bg_focus                         = "#66d9ef00"
+--theme.tasklist_bg_normal                        = "#24242400"
+theme.tasklist_bg_normal                        = "#202020"
+theme.tasklist_bg_focus                         = "#b8bb14"
+theme.tasklist_fg_focus                         = "#333333"
 theme.tasklist_sticky                           = theme.ocol .. "[S]</span>"
 theme.tasklist_ontop                            = theme.ocol .. "[T]</span>"
 theme.tasklist_floating                         = theme.ocol .. "[F]</span>"
@@ -115,14 +118,14 @@ local white  = theme.fg_focus
 local gray   = theme.fg_normal
 
 -- Textclock
-local mytextclock = wibox.widget.textclock(markup(white, " %H:%M "))
+local mytextclock = wibox.widget.textclock(markup(gray, " %a %b %d   %H:%M "))
 mytextclock.font = theme.font
 
 -- Calendar
 theme.cal = lain.widget.cal({
     attach_to = { mytextclock },
     notification_preset = {
-        font = "Misc Tamsyn 11",
+        font = "Fira Mono",
         fg   = white,
         bg   = theme.bg_normal
     }
@@ -279,113 +282,138 @@ function theme.at_screen_connect(s)
 
     -- Create a taglist widget
     s.mytaglist = awful.widget.taglist(s, awful.widget.taglist.filter.all, awful.util.taglist_buttons)
-    s.mytasklist = awful.widget.tasklist(s, awful.widget.tasklist.filter.currenttags, tasklist_buttons)
+    --s.mytasklist = awful.widget.tasklist(s, awful.widget.tasklist.filter.currenttags, tasklist_buttons)
+    s.mytasklist = awful.widget.tasklist(s, awful.widget.tasklist.filter.currenttags, awful.util.tasklist_buttons, { bg_focus = theme.tasklist_bg_focus, shape = gears.shape.rectangle,  align = "center" })
 
---    s.mytasklist = awful.widget.tasklist {
---    screen   = s,
---    filter   = awful.widget.tasklist.filter.currenttags,
---    buttons  = tasklist_buttons,
---    style    = {
---        shape_border_width = 1,
---        shape_border_color = '#777777',
---	shape_radius = 3,
---        shape  = gears.shape.rounded_rect,
---    },
---    layout   = {
---        spacing = 10,
---	forced_width = 50,
---        spacing_widget = {
---            {
---                forced_width = 2,
---                shape        = gears.shape.circle,
---                widget       = wibox.widget.separator
---            },
---            valign = 'center',
---            halign = 'center',
---            widget = wibox.container.place,
---        },
---        layout  = wibox.layout.fixed.horizontal
---    },
---    -- Notice that there is *NO* wibox.wibox prefix, it is a template,
---    -- not a widget instance.
---    widget_template = {
---        {
---            {
---                {
---                    {
---                        id     = 'icon_role',
---                        widget = wibox.widget.imagebox,
---                    },
---                    margins = 2,
---                    widget  = wibox.container.margin,
---                },
---                {
---                    id     = 'text_role',
---                    widget = wibox.widget.textbox,
---                },
---                layout = wibox.layout.fixed.horizontal,
---            },
---            left  = 10,
---            right = 10,
---            widget = wibox.container.margin
---        },
---        id     = 'background_role',
---        widget = wibox.container.background,
---    },
---}
+    -- s.mytasklist = awful.widget.tasklist {
+    --    screen   = s,
+    --    filter   = awful.widget.tasklist.filter.currenttags,
+    --    buttons  = tasklist_buttons,
+    --    style    = {
+    --       --shape_border_width = 1,
+    --       --shape_border_color = '#777777',
+    --       --shape_radius = 3,
+    --       shape  = gears.shape.rectangle,
+    --    },
+    --    layout   = {
+    --       spacing = 10,
+    --       forced_width = 50,
+    --       spacing_widget = {
+    --          {
+    --             forced_width = 2,
+    --             shape        = gears.shape.circle,
+    --             widget       = wibox.widget.separator
+    --          },
+    --          valign = 'center',
+    --          halign = 'center',
+    --          widget = wibox.container.place,
+    --       },
+    --       layout  = wibox.layout.fixed.horizontal
+    --    },
+    --    -- Notice that there is *NO* wibox.wibox prefix, it is a template,
+    --    -- not a widget instance.
+    --    widget_template = {
+    --       {
+    --          {
+    --             {
+    --                {
+    --                   id     = 'icon_role',
+    --                   widget = wibox.widget.imagebox,
+    --                },
+    --                margins = 2,
+    --                widget  = wibox.container.margin,
+    --             },
+    --             {
+    --                id     = 'text_role',
+    --                widget = wibox.widget.textbox,
+    --             },
+    --             layout = wibox.layout.fixed.horizontal,
+    --          },
+    --          left  = 5,
+    --          right = 10,
+    --          widget = wibox.container.margin
+    --       },
+    --       id = 'background_role',
+    --       bg = '#b8bb14',
+    --       widget = wibox.container.background,
+    --    },
+    -- }
     local sneakytray = wibox.widget.imagebox(theme.menu_submenu_icon)
     sneakytray:buttons(my_table.join(
                           awful.button({}, 1, function () mysystray.visible = not mysystray.visible end)))
     
-    mykeyboardlayout = awful.widget.keyboardlayout()
+    function keyboardlayout_with_font(font)
+       local result = awful.widget.keyboardlayout()
+       result.widget.font = font
+       return result
+    end
+
+    mykeyboardlayout = wibox.widget {
+       {
+          {
+             widget = keyboardlayout_with_font("DejaVu Sans Mono Book 8")
+          },
+          fg = "#ffffff", -- text color
+          bg = "#cc241d",
+          widget = wibox.container.background
+       },
+       -- margins = 3,
+       --color = "red",
+       widget = wibox.container.margin
+    }
+
+    -- mykeyboardlayout = awful.widget.keyboardlayout()
 
     -- Create the wibox
     s.mywibox = awful.wibar({ position = "top", screen = s, height = dpi(20), bg = theme.bg_normal, fg = theme.fg_normal })
-    s.borderwibox = awful.wibar({ position = "top", screen = s, height = dpi(1), bg = theme.taglist_bg_focus, x = dpi(0), y = dpi(19)})
+    s.borderwibox = awful.wibar({ position = "top", screen = s, height = dpi(2), bg = theme.taglist_bg_focus, x = dpi(0), y = dpi(19)})
 
     local stray = wibox.widget.systray()
     stray:set_base_size(22)
     --stray.forced_height = 22
- local strayw = wibox.container.margin(stray, 0,0,3,2)
+    local strayw = wibox.container.margin(stray, 0,0,3,2)
 
     -- Add widgets to the wibox
     s.mywibox:setup {
-        layout = wibox.layout.align.horizontal,
-        { -- Left widgets
-            layout = wibox.layout.fixed.horizontal,
---            wibox.container.background(s.mylayoutbox, "#f92672"),
-            s.mylayoutbox,
-            first,
-            s.mytaglist,
-            spr,
-            --s.mytxtlayoutbox,
-            --s.mylayoutbox,
-            --spr,
-            s.mypromptbox,
-            spr,
-        },
-        s.mytasklist, -- Middle widget
-        { -- Right widgets
-            layout = wibox.layout.fixed.horizontal,
-            --wibox.widget.systray(),
-            --theme.mpd.widget,
-            --sneakytray,
-            --mysystray,
-            strayw,
-            spr,
-            mykeyboardlayout,
-            spr,
-	    brightness_widget,
-            spr,
-	    battery_widget,
-            spr,
-	    volume_widget,
-            spr,
-	    --theme.mail.widget,
-            --theme.fs.widget,
-            --volumewidget,
-            mytextclock,
-        },
+       layout = wibox.layout.align.horizontal,
+       { -- Left widgets
+          layout = wibox.layout.fixed.horizontal,
+          --wibox.container.background(s.mylayoutbox, "#f92672"),
+          wibox.container.background(s.mylayoutbox, "#cc241d"),
+          --s.mylayoutbox,
+          first,
+          s.mytaglist,
+          --spr,
+          --s.mytxtlayoutbox,
+          --s.mylayoutbox,
+          --spr,
+          s.mypromptbox,
+          -- spr,
+          s.mytasklist, -- Middle widget
+       },
+       nil,
+       { -- Right widgets
+          layout = wibox.layout.fixed.horizontal,
+          --wibox.widget.systray(),
+          --theme.mpd.widget,
+          --sneakytray,
+          --mysystray,
+          strayw,
+          spr,
+          mykeyboardlayout,
+          --mykeyboardlayout,
+          spr,
+          -- brightness_widget,
+          --spr,
+          -- battery_widget,
+          -- spr,
+          -- volume_widget,
+          -- spr,
+          --theme.mail.widget,
+          --theme.fs.widget,
+          --volumewidget,
+          mytextclock,
+       },
     }
 end
 

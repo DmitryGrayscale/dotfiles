@@ -63,8 +63,9 @@ local function run_once_not_exact(cmd_arr)
     end
 end
 
-run_once({ "picom -b", "unclutter -root" }) -- entries must be separated by commas
-run_once_not_exact({ "mopidy -q" })
+run_once({ "xrdb -load ~/.Xresources" }) -- entries must be separated by commas
+run_once({ 'setxkbmap "us,ru" -option "grp:alt_shift_toggle"' })
+-- run_once({ "picom -b", "unclutter -root" }) -- entries must be separated by commas
 -- This function implements the XDG autostart specification
 --[[
 awful.spawn.with_shell(
@@ -96,7 +97,7 @@ local chosen_theme = themes[8]
 local modkey       = "Mod4"
 local altkey       = "Mod1"
 --local terminal     = "xfce4-terminal -e 'bash -c \"tmux new -s $(~/.local/scripts/tmux-random-sname.sh)\"'"
-local terminal     = "xfce4-terminal -e 'fish -i'"
+local terminal     = "gnome-terminal -- 'fish'"
 local editor       = os.getenv("EDITOR") or "emacs -nw"
 local gui_editor   = "emacsclient -c -a emacs"
 local browser      = "opera"
@@ -194,6 +195,9 @@ lain.layout.cascade.tile.nmaster       = 5
 lain.layout.cascade.tile.ncol          = 2
 
 beautiful.init(string.format("%s/.config/awesome/themes/%s/theme.lua", os.getenv("HOME"), chosen_theme))
+-- beautiful.border_color_floating = "#FE8019"
+-- beautiful.border_color_floating_active = "#FE8019"
+-- beautiful.border_color_floating_normal = "#FE8019"
 -- }}}
 -- require *after* `beautiful.init` or the theme will be inconsistent!
 
@@ -516,9 +520,12 @@ globalkeys = my_table.join(
     awful.key({ modkey }, "v", function () awful.spawn.with_shell("xsel -b | xsel") end,
               {description = "copy gtk to terminal", group = "hotkeys"}),
 
+
     -- User programs
-    awful.key({ modkey }, "q", function () awful.spawn(browser) end,
+    awful.key({ modkey }, "q", function () awful.spawn.with_shell("/mnt/c/Windows/System32/WindowsPowerShell/v1.0/powershell.exe -File C:/Users/dbelyaki/git/showchrome.ps1") end,
               {description = "run browser", group = "launcher"}),
+    -- awful.key({ altkey }, "z", function () awful.spawn.with_shell("powershell.exe -File C:/Users/dbelyaki/git/showchrome.ps1") end,
+    --           {description = "run browser", group = "launcher"}),
     awful.key({ modkey }, "a", function () awful.spawn(guieditor) end,
               {description = "run gui editor", group = "launcher"}),
 
@@ -536,9 +543,9 @@ globalkeys = my_table.join(
     --]]
     -- alternatively use rofi, a dmenu-like application with more features
     -- check https://github.com/DaveDavenport/rofi for more details
-    awful.key({ modkey }, "e", function () awful.spawn.with_shell("eval $(echo -e 'emacs\nemacsclient\nemacsclient -c' | dmenu) $(cat ~/.listconfigs | dmenu)") end,
+    awful.key({ modkey }, "e", function () awful.spawn.with_shell("emacsclient -a emacs $(cat ~/.listconfigs | rofi -dmenu)") end,
               {description = "run config editor in existing frame", group = "launcher"}),
-    awful.key({ modkey, "Shift" }, "e", function () awful.spawn.with_shell("emacsclient -c -a emacs $(cat ~/.listconfigs | dmenu)") end,
+    awful.key({ modkey, "Shift" }, "e", function () awful.spawn.with_shell("emacsclient -c -a emacs $(cat ~/.listconfigs | rofi -dmenu)") end,
               {description = "run config editor in new frame", group = "launcher"}),
     awful.key({ modkey }, "r", function ()
             os.execute("rofi -combi-modi 'drun,run' -show combi -show-icons -lines 13 ")
@@ -785,7 +792,11 @@ end)
 -- end)
 
 client.connect_signal("focus", function(c)
-                         c.border_width = beautiful.border_width
+                         if c.maximized then
+                            c.border_width = 0
+                         else
+                            c.border_width = beautiful.border_width
+                         end
                          c.border_color = beautiful.border_focus end)
 client.connect_signal("unfocus", function(c)
                          c.border_color = beautiful.border_normal
@@ -793,27 +804,28 @@ client.connect_signal("unfocus", function(c)
 end)
 
 client.connect_signal("property::floating", function (c)
-    if c.floating then
-        awful.titlebar.show(c)
-    else
-        awful.titlebar.hide(c)
-    end
+                         if c.floating then
+                            awful.titlebar.show(c)
+                         else
+                            awful.titlebar.hide(c)
+                         end
 end)
 client.connect_signal("property::maximized", function (c)
-    if c.maximized then
-        awful.titlebar.hide(c)
-    else
-        awful.titlebar.show(c)
-    end
+                         if c.maximized then
+                            awful.titlebar.hide(c)
+                         else
+                            awful.titlebar.show(c)
+                         end
 end)
 
 awful.tag.attached_connect_signal(s, "property::layout", function (t)
-    local float = t.layout.name == "floating"
-    for _,c in pairs(t:clients()) do
-        c.floating = float
-    end
+                                     local float = t.layout.name == "floating"
+                                     for _,c in pairs(t:clients()) do
+                                        c.floating = float
+                                     end
 end)
-run_once({ "emacs --daemon", "nm-applet" }) -- entries must be separated by commas
+run_once({ "emacs --daemon" }) -- entries must be separated by commas
+-- run_once({ "nm-applet" }) -- entries must be separated by commas
 
 -- possible workaround for tag preservation when switching back to default screen:
 -- https://github.com/lcpz/awesome-copycats/issues/251

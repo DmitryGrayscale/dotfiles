@@ -33,9 +33,9 @@
     background:                  @gruvbox-dark-bg0;
     background-color:            @background;
     foreground:                  @gruvbox-dark-fg1;
-    border-color:                @gruvbox-dark-bg0;
-    separatorcolor:              @border-color;
-    scrollbar-handle:            @border-color;
+    border-color:                @gruvbox-orange;
+    separatorcolor:              @gruvbox-dark-bg0;
+    scrollbar-handle:            @gruvbox-dark-bg0;
 
     normal-background:           @background;
     normal-foreground:           @foreground;
